@@ -83,6 +83,116 @@ Parameters:
     Type: String
     Default: 0
 
+  GpApisAndFrontendPort:
+    Description: Puerto de salida de GpGlueConnection
+    Type: String
+    Default: 8080
+
+  GpApisAndFrontendOutboundRule:
+    Description: Puerto de salida de GpApisAndFrontendOutboundRule
+    Type: String
+    Default: 8080
+
+  GpApisAndFrontendPrivateZoneInRulePort:
+    Description: Puerto de salida de GpApisAndFrontendPrivateZoneInRule
+    Type: String
+    Default: 8080
+
+  GpApisAndFrontendPrivateZoneOutboundRulePort:
+    Description: Puerto de salida de GpApisAndFrontendPrivateZoneOutboundRule
+    Type: String
+    Default: 443
+
+  GpApisAndFrontendPrivateZoneOutboundRule2Port:
+    Description: Puerto de salida de GpApisAndFrontendPrivateZoneOutboundRule2
+    Type: String
+    Default: 8085
+
+  GpGlueConnectionOutboundRulePort:
+    Description: Puerto de salida de GpGlueConnectionOutboundRule
+    Type: String
+    Default: 443
+
+  GpBackEndXsellOutboundRulePort:
+    Description: Puerto de salida de GpBackEndXsellOutboundRule
+    Type: String
+    Default: 51678
+
+  GpBackEndXsellOutboundRule2Port:
+    Description: Puerto de salida de GpBackEndXsellOutboundRule2
+    Type: String
+    Default: 2375
+
+  GpBackEndXsellOutboundRule4Port:
+    Description: Puerto de salida de GpBackEndXsellOutboundRule4
+    Type: String
+    Default: 443
+
+  GpBackEndXsellToVcpEndPointOutboundRulePort:
+    Description: Puerto de salida de GpBackEndXsellToVcpEndPointOutboundRule
+    Type: String
+    Default: 443
+
+  GpBackEndXsellToS3VcpEndPointOutboundRulePort:
+    Description: Puerto de salida de GpBackEndXsellToS3VcpEndPointOutboundRule
+    Type: String
+    Default: 443
+
+  GpBackEndXsellToDynamodbVcpEndPointOutboundRulePort:
+    Description: Puerto de salida de GpBackEndXsellToDynamodbVcpEndPointOutboundRule
+    Type: String
+    Default: 443
+
+  DdBackPrivateOutboundRule2Port:
+    Description: Puerto de salida de DdBackPrivateOutboundRule2
+    Type: String
+    Default: 443
+
+  DdBackPrivateToS3VcpEndPointOutboundRulePort :
+    Description: Puerto de salida de DdBackPrivateToS3VcpEndPointOutboundRule
+    Type: String
+    Default: 443
+
+  DdBackPrivateToDynamodbVcpEndPointOutboundRulePort:
+    Description: Puerto de salida de DdBackPrivateToDynamodbVcpEndPointOutboundRule
+    Type: String
+    Default: 443
+
+  LnsBackPrivateOutboundRule2Port:
+    Description: Puerto de salida de LnsBackPrivateOutboundRule2
+    Type: String
+    Default: 443
+
+  LnsBackPrivateToS3VcpEndPointOutboundRulePort:
+    Description: Puerto de salida de LnsBackPrivateToS3VcpEndPointOutboundRule
+    Type: String
+    Default: 443
+
+  LnsBackPrivateToDynamodbVcpEndPointOutboundRulePort:
+    Description: Puerto de salida de LnsBackPrivateToDynamodbVcpEndPointOutboundRule
+    Type: String
+    Default: 443
+
+  FtBackPrivateOutboundRule2Port:
+    Description: Puerto de salida de FtBackPrivateOutboundRule2
+    Type: String
+    Default: 443
+
+  FtBackPrivateToS3VcpEndPointOutboundRulePort:
+    Description: Puerto de salida de FtBackPrivateToS3VcpEndPointOutboundRulePort
+    Type: String
+    Default: 443
+
+  FtBackPrivateToDynamodbVcpEndPointOutboundRulePort:
+    Description: Puerto de salida de FtBackPrivateToDynamodbVcpEndPointOutboundRulePort
+    Type: String
+    Default: 443
+
+  ChaBackPrivateOutboundRule2Port:
+    Description: Puerto de salida de ChaBackPrivateOutboundRule2
+    Type: String
+    Default: 443
+
   DeploySubnetsLoans:
     Description: Indica si se debe desplegar o no las subredes públicas o privadas de proposito Loans
     Type: String 
@@ -371,7 +481,7 @@ Resources:
   GpApisAndFrontendPublicZoneOutboundRuleToPrivate:    
     Type: AWS::EC2::SecurityGroupEgress
     Properties:
-      FromPort: 8080
+      FromPort: !Ref GpApisAndFrontendPort
       IpProtocol: tcp
       ToPort: 8080
       DestinationSecurityGroupId:
@@ -385,7 +495,7 @@ Resources:
 
   GpApisAndFrontendPrivateZoneSecurityGroup:
     Type: AWS::EC2::SecurityGroup
-    Properties: #error de awspt4
+    Properties: #error que se presenta en fluid
       VpcId: !Ref VPC
       GroupDescription: Grupo seguridad apis y frontend zona privada      
       GroupName: !Join ['-', [!Ref EnvironmentId , "gp-apis-and-frontend-private-zone-sg"]]
@@ -414,7 +524,7 @@ Resources:
   GpApisAndFrontendPrivateZoneInRule:    
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
-      FromPort: 8080
+      FromPort: !Ref GpApisAndFrontendPrivateZoneInRulePort
       IpProtocol: tcp
       ToPort: 8080
       SourceSecurityGroupId:
@@ -430,7 +540,7 @@ Resources:
     Type: AWS::EC2::SecurityGroupEgress
     Properties:
       CidrIp: !Ref CIDRBlock
-      FromPort: 443
+      FromPort: !Ref GpApisAndFrontendPrivateZoneOutboundRulePort
       IpProtocol: tcp
       ToPort: 443
       GroupId:
@@ -438,10 +548,10 @@ Resources:
         - GpApisAndFrontendPrivateZoneSecurityGroup
         - GroupId
   
-  GpApisAndFrontendPrivateZoneOutboundRule2:    
+  GpApisAndFrontendPrivateZoneOutboundRule2:    #IPS desiguales
     Type: AWS::EC2::SecurityGroupEgress
     Properties:      
-      FromPort: 8085
+      FromPort: !Ref GpApisAndFrontendPrivateZoneOutboundRule2Port
       IpProtocol: tcp
       ToPort: 8097
       DestinationSecurityGroupId:
@@ -456,7 +566,7 @@ Resources:
   GpApisAndFrontendPublicZoneOutboundRule:    
     Type: AWS::EC2::SecurityGroupEgress
     Properties:     
-      FromPort: 8080
+      FromPort: !Ref GpApisAndFrontendOutboundRule
       IpProtocol: tcp
       ToPort: 8080
       DestinationSecurityGroupId: 
@@ -500,15 +610,15 @@ Resources:
     Type: AWS::EC2::SecurityGroupEgress
     Properties:
       CidrIp: !Ref CIDRBlock
-      FromPort: 0
+      FromPort: !Ref GpGlueConnectionOutboundRulePort
       IpProtocol: tcp
-      ToPort: 0
+      ToPort: 443
       GroupId:
         Fn::GetAtt:
         - GpGlueConnectionSecurityGroup
         - GroupId  
 
-  GpGlueConnectionInboundRule:    
+  GpGlueConnectionInboundRule:     #IPS desiguales
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
       IpProtocol: tcp
@@ -774,11 +884,11 @@ Resources:
         - GpBackEndXsellSecurityGroup
         - GroupId
   
-  GpBackEndXsellOutboundRule:
+  GpBackEndXsellOutboundRule:  #IPS desiguales
     Type: AWS::EC2::SecurityGroupEgress
     Properties:
       CidrIp: !Ref CIDRBlock
-      FromPort: 51678
+      FromPort: !Ref GpBackEndXsellOutboundRulePort
       IpProtocol: tcp
       ToPort: 51680
       GroupId:
@@ -786,11 +896,11 @@ Resources:
         - GpBackEndXsellSecurityGroup
         - GroupId
 
-  GpBackEndXsellOutboundRule2:
+  GpBackEndXsellOutboundRule2:  #IPS desiguales
     Type: AWS::EC2::SecurityGroupEgress
     Properties:
       CidrIp: !Ref CIDRBlock
-      FromPort: 2375
+      FromPort: !Ref GpBackEndXsellOutboundRule2Port
       IpProtocol: tcp
       ToPort: 2376
       GroupId:
@@ -814,7 +924,7 @@ Resources:
       Type: AWS::EC2::SecurityGroupEgress
       Properties:
         CidrIp: !Ref CIDRBlock
-        FromPort: 443
+        FromPort: !Ref GpBackEndXsellOutboundRule4Port
         IpProtocol: tcp
         ToPort: 443
         GroupId:
@@ -837,7 +947,7 @@ Resources:
   GpBackEndXsellToVcpEndPointOutboundRule:
     Type: AWS::EC2::SecurityGroupEgress
     Properties:
-      FromPort: 443
+      FromPort: !Ref GpBackEndXsellToVcpEndPointOutboundRulePort
       IpProtocol: tcp
       ToPort: 443
       DestinationSecurityGroupId: 
@@ -853,7 +963,7 @@ Resources:
     Type: AWS::EC2::SecurityGroupEgress
     Condition: isVpcEndpoints 
     Properties:
-      FromPort: 443
+      FromPort: !Ref GpBackEndXsellToS3VcpEndPointOutboundRulePort
       IpProtocol: tcp
       ToPort: 443      
       DestinationPrefixListId: !FindInMap [RegionMap, !Ref "AWS::Region", S3PrefixListId]        
@@ -866,7 +976,7 @@ Resources:
     Type: AWS::EC2::SecurityGroupEgress
     Condition: isVpcEndpoints 
     Properties:
-      FromPort: 443
+      FromPort: !Ref GpBackEndXsellToDynamodbVcpEndPointOutboundRulePort
       IpProtocol: tcp
       ToPort: 443      
       DestinationPrefixListId: !FindInMap [RegionMap, !Ref "AWS::Region", DynamodbPrefixListId]        
@@ -937,7 +1047,7 @@ Resources:
     Type: AWS::EC2::SecurityGroupEgress
     Condition: isDeployPrivateSubnetDemandDepositsBackPri
     Properties:
-      FromPort: 443
+      FromPort: !Ref DdBackPrivateOutboundRule2Port
       IpProtocol: tcp
       ToPort: 443
       CidrIp: !Ref CIDRBlock         
@@ -950,7 +1060,7 @@ Resources:
     Type: AWS::EC2::SecurityGroupEgress
     Condition: isVPCEndpointsisDeployPrivateSubnetDemandDepositsBackPri 
     Properties:
-      FromPort: 443
+      FromPort: !Ref DdBackPrivateToS3VcpEndPointOutboundRulePort
       IpProtocol: tcp
       ToPort: 443
       DestinationPrefixListId: !FindInMap [RegionMap, !Ref "AWS::Region", S3PrefixListId]      
@@ -963,7 +1073,7 @@ Resources:
     Type: AWS::EC2::SecurityGroupEgress
     Condition: isVPCEndpointsisDeployPrivateSubnetDemandDepositsBackPri 
     Properties:
-      FromPort: 443
+      FromPort: !Ref DdBackPrivateToDynamodbVcpEndPointOutboundRulePort
       IpProtocol: tcp
       ToPort: 443      
       DestinationPrefixListId: !FindInMap [RegionMap, !Ref "AWS::Region", DynamodbPrefixListId]        
@@ -1033,7 +1143,7 @@ Resources:
     Condition: isDeployPrivateSubnetLoansBackPri
     Type: AWS::EC2::SecurityGroupEgress
     Properties:
-      FromPort: 443
+      FromPort: !Ref LnsBackPrivateOutboundRule2Port
       IpProtocol: tcp
       ToPort: 443
       CidrIp: !Ref CIDRBlock         
@@ -1046,7 +1156,7 @@ Resources:
     Type: AWS::EC2::SecurityGroupEgress
     Condition: isVPCEndpointsisDeployPrivateSubnetLoansBackPri 
     Properties:
-      FromPort: 443
+      FromPort: !Ref LnsBackPrivateToS3VcpEndPointOutboundRulePort
       IpProtocol: tcp
       ToPort: 443
       DestinationPrefixListId: !FindInMap [RegionMap, !Ref "AWS::Region", S3PrefixListId]       
@@ -1059,7 +1169,7 @@ Resources:
     Type: AWS::EC2::SecurityGroupEgress
     Condition: isVPCEndpointsisDeployPrivateSubnetLoansBackPri 
     Properties:
-      FromPort: 443
+      FromPort: !Ref LnsBackPrivateToDynamodbVcpEndPointOutboundRulePort
       IpProtocol: tcp
       ToPort: 443
       DestinationPrefixListId: !FindInMap [RegionMap, !Ref "AWS::Region", DynamodbPrefixListId]                
@@ -1329,7 +1439,7 @@ Resources:
     Condition: isDeployPrivateSubnetTiBackPri
     Type: AWS::EC2::SecurityGroupEgress
     Properties:
-      FromPort: 443
+      FromPort: !Ref FtBackPrivateOutboundRule2Port
       IpProtocol: tcp
       ToPort: 443
       CidrIp: !Ref CIDRBlock         
@@ -1342,7 +1452,7 @@ Resources:
     Type: AWS::EC2::SecurityGroupEgress
     Condition: isVPCEndpointsisDeployPrivateSubnetTiBackPri
     Properties:
-      FromPort: 443
+      FromPort: !Ref FtBackPrivateToS3VcpEndPointOutboundRulePort
       IpProtocol: tcp
       ToPort: 443
       DestinationPrefixListId: !FindInMap [RegionMap, !Ref "AWS::Region", S3PrefixListId]       
@@ -1355,7 +1465,7 @@ Resources:
     Type: AWS::EC2::SecurityGroupEgress
     Condition: isVPCEndpointsisDeployPrivateSubnetTiBackPri
     Properties:
-      FromPort: 443
+      FromPort: !Ref FtBackPrivateToDynamodbVcpEndPointOutboundRulePort
       IpProtocol: tcp
       ToPort: 443
       DestinationPrefixListId: !FindInMap [RegionMap, !Ref "AWS::Region", DynamodbPrefixListId]                
@@ -1410,7 +1520,7 @@ Resources:
     Type: AWS::EC2::SecurityGroupEgress
     Condition: isDeployPrivateSubnetChannelBackPri
     Properties:
-      FromPort: 443
+      FromPort: !Ref ChaBackPrivateOutboundRule2Port
       IpProtocol: tcp
       ToPort: 443
       CidrIp: !Ref CIDRBlock
